@@ -4,7 +4,7 @@
     "slug": "Basketball_project",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo.png",
     "scheme": "basketballproject",
     "userInterfaceStyle": "automatic",
     "ios": {
@@ -28,9 +28,9 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "backgroundColor": "#090A0F",
+          "image": "./assets/images/logo.png",
+          "imageWidth": 120
         }
       ]
     ],

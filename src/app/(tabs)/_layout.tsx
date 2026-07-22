@@ -1,8 +1,8 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { BlurView } from 'expo-blur';
-import { Platform, View } from 'react-native';
-import { Activity, Trophy } from 'lucide-react-native';
+import { Platform } from 'react-native';
+import { LayoutDashboard, ScanLine, ClipboardList, PlaySquare, User } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -23,23 +23,56 @@ export default function TabLayout() {
           ) : null,
         tabBarActiveTintColor: '#00F0FF',
         tabBarInactiveTintColor: '#A1A1AA',
+        tabBarLabelStyle: {
+          fontSize: 10,
+          fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+          fontWeight: '600',
+          marginTop: -5,
+        }
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'TELEMETRY',
+          title: 'DASHBOARD',
           tabBarIcon: ({ color, size }) => (
-            <Activity size={size} color={color} />
+            <LayoutDashboard size={22} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="leaderboard"
+        name="analyze"
         options={{
-          title: 'RANKINGS',
+          title: 'ANALYZE',
           tabBarIcon: ({ color, size }) => (
-            <Trophy size={size} color={color} />
+            <ScanLine size={22} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="plan"
+        options={{
+          title: 'PLAN',
+          tabBarIcon: ({ color, size }) => (
+            <ClipboardList size={22} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="tutorials"
+        options={{
+          title: 'TUTORIALS',
+          tabBarIcon: ({ color, size }) => (
+            <PlaySquare size={22} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'PROFILE',
+          tabBarIcon: ({ color, size }) => (
+            <User size={22} color={color} />
           ),
         }}
       />

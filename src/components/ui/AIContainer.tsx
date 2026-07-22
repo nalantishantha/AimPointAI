@@ -1,9 +1,7 @@
 import React from 'react';
-import { View, KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
+import { View, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { cn } from '@/utils/utils';
-import { LinearGradient } from 'expo-linear-gradient'; // Oh wait, I don't have expo-linear-gradient installed. Let's just use standard views or install it.
-
-// Let's stick to standard View to reduce dependencies, using NativeWind styles
 export function AIContainer({ 
   children, 
   className,

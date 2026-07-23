@@ -5,9 +5,10 @@ import { MotiView } from 'moti';
 import { HeroTitle, Body, MonoText } from '@/components/ui/Typography';
 import { Button } from '@/components/ui/Button';
 import { AIContainer } from '@/components/ui/AIContainer';
-import { Video } from 'lucide-react-native';
+import { useVideoPlayer, VideoView } from 'expo-video';
 
 const { width } = Dimensions.get('window');
+const CAROUSEL_VIDEO = require('@/../assets/tutorials/carousal_video.mp4');
 
 const SLIDES = [
   {
@@ -32,6 +33,13 @@ export default function CarouselScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
 
+  // Initialize a single shared video player that stays static
+  const player = useVideoPlayer(CAROUSEL_VIDEO, player => {
+    player.loop = true;
+    player.muted = true;
+    player.play();
+  });
+
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
     const index = Math.round(scrollPosition / width);
@@ -51,28 +59,34 @@ export default function CarouselScreen() {
   return (
     <AIContainer safeArea={true} className="bg-primary-bg">
       <View className="flex-1">
-        <ScrollView
-          ref={scrollRef}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          className="flex-1"
-        >
-          {SLIDES.map((slide) => (
-            <View key={slide.id} style={{ width }} className="flex-1 pt-4 px-6 pb-[160px]">
-              
-              {/* Top Video Placeholder */}
-              <View className="flex-1 w-full bg-secondary-bg/30 rounded-3xl mb-8 items-center justify-center border border-border/50">
-                <Video color="#A1A1AA" size={32} className="mb-2 opacity-50" />
-                <MonoText className="text-secondary-text/50 text-xs tracking-widest">
-                  [ VIDEO ASSET PENDING ]
-                </MonoText>
-              </View>
-              
-              {/* Text Content Area */}
-              <View className="w-full">
+        
+        <View className="flex-1 pt-4 px-6">
+          <View className="flex-1 w-full bg-secondary-bg/30 rounded-3xl mb-8 border border-border/50 overflow-hidden">
+            <VideoView
+              style={{ flex: 1, width: '100%', height: '100%' }}
+              player={player}
+              contentFit="cover"
+              allowsFullscreen={false}
+              showsControls={false}
+            />
+            {/* Subtle dark gradient overlay to make it look premium */}
+            <View className="absolute inset-0 bg-primary-bg/20" />
+          </View>
+        </View>
+
+        {/* SWIPING TEXT AREA (Bottom part of screen) */}
+        <View style={{ height: 180 }} className="mb-[140px]">
+          <ScrollView
+            ref={scrollRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            className="flex-1"
+          >
+            {SLIDES.map((slide) => (
+              <View key={slide.id} style={{ width }} className="px-6">
                 <MotiView
                   from={{ opacity: 0, translateY: 10 }}
                   animate={{ opacity: 1, translateY: 0 }}
@@ -82,10 +96,9 @@ export default function CarouselScreen() {
                   <Body className="text-[15px] leading-6 text-secondary-text">{slide.description}</Body>
                 </MotiView>
               </View>
-
-            </View>
-          ))}
-        </ScrollView>
+            ))}
+          </ScrollView>
+        </View>
 
         {/* Bottom Controls */}
         <View className="absolute bottom-6 left-0 right-0 px-6 bg-primary-bg">

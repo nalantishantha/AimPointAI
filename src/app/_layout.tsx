@@ -1,10 +1,11 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { AuthProvider } from '@/context/AuthContext';
 import '../global.css';
 
 export default function Layout() {
   return (
-    <>
+    <AuthProvider>
       <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
         <Stack.Screen name="index" />
@@ -15,6 +16,6 @@ export default function Layout() {
         <Stack.Screen name="capture" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="analysis/[id]" options={{ animation: 'slide_from_right' }} />
       </Stack>
-    </>
+    </AuthProvider>
   );
 }

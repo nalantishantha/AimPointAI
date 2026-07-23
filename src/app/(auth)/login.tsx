@@ -8,19 +8,40 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { AIContainer } from '@/components/ui/AIContainer';
 import { ChevronLeft } from 'lucide-react-native';
+import { useAuth } from '@/context/AuthContext';
+import { apiClient } from '@/api/client';
+import axios from 'axios';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { signIn } = useAuth();
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    setErrorMsg('');
     setIsLoading(true);
-    setTimeout(() => {
+    
+    try {
+      const response = await apiClient.post('/auth/login', {
+        email,
+        password
+      });
+      
+      await signIn(response.data.token, response.data.user);
+      // The Layout routing effect will automatically kick us to (tabs)
+    } catch (error: any) {
+      console.error('Login Error:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        setErrorMsg(error.response.data.error || 'Invalid credentials');
+      } else {
+        setErrorMsg('Network error. Is the server running?');
+      }
       setIsLoading(false);
-      router.replace('/(tabs)');
-    }, 2500); // Simulate network request
+    }
   };
 
   return (
@@ -85,6 +106,10 @@ export default function LoginScreen() {
               animate={{ opacity: 1 }}
               transition={{ type: 'timing', duration: 800, delay: 400 }}
             >
+              {errorMsg ? (
+                <Label className="text-red-500 text-center mb-4 text-sm font-semibold">{errorMsg}</Label>
+              ) : null}
+
               <Button 
                 label="Log In" 
                 onPress={handleLogin}

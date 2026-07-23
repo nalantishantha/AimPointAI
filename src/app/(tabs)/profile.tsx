@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/Button';
 import { AIContainer } from '@/components/ui/AIContainer';
 import { Settings, LogOut, Award, Activity } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import { useAuth } from '@/context/AuthContext';
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { user, signOut } = useAuth();
 
   return (
     <AIContainer safeArea={true}>
@@ -22,9 +24,13 @@ export default function ProfileScreen() {
           className="items-center mb-10 mt-4"
         >
           <View className="w-24 h-24 rounded-full bg-secondary-bg border-2 border-accent items-center justify-center mb-4">
-            <MonoText className="text-white text-2xl">OP</MonoText>
+            <MonoText className="text-white text-2xl">
+              {user ? `${user.firstName[0]}${user.lastName[0]}` : 'OP'}
+            </MonoText>
           </View>
-          <Title className="text-2xl mb-1">Operator 01</Title>
+          <Title className="text-2xl mb-1">
+            {user ? `${user.firstName} ${user.lastName}` : 'Operator 01'}
+          </Title>
           <Label className="text-secondary-text tracking-widest text-xs">MEMBER SINCE 2026</Label>
         </MotiView>
 
@@ -83,7 +89,10 @@ export default function ProfileScreen() {
             label="DISCONNECT" 
             variant="secondary"
             icon={<LogOut color="#A1A1AA" size={18} />}
-            onPress={() => router.replace('/(auth)')}
+            onPress={async () => {
+              await signOut();
+              // Router effect in AuthContext will handle kick to (auth)
+            }}
           />
         </MotiView>
 

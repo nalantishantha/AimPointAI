@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { verifyToken, AuthRequest } from '../middleware/auth';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
@@ -45,7 +46,16 @@ router.post('/register', async (req, res) => {
     // Generate JWT
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
 
-    res.status(201).json({ token, user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName } });
+    res.status(201).json({ 
+      token, 
+      user: { 
+        id: user.id, 
+        email: user.email, 
+        firstName: user.firstName, 
+        lastName: user.lastName,
+        hasCompletedOnboarding: false
+      } 
+    });
   } catch (error) {
     console.error('Registration Error:', error);
     res.status(500).json({ error: 'Internal server error during registration.' });
@@ -61,8 +71,11 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required.' });
     }
 
-    // Find user
-    const user = await prisma.user.findUnique({ where: { email } });
+    // Find user with details
+    const user = await prisma.user.findUnique({ 
+      where: { email },
+      include: { details: true }
+    });
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
@@ -76,7 +89,16 @@ router.post('/login', async (req, res) => {
     // Generate JWT
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
 
-    res.status(200).json({ token, user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName } });
+    res.status(200).json({ 
+      token, 
+      user: { 
+        id: user.id, 
+        email: user.email, 
+        firstName: user.firstName, 
+        lastName: user.lastName,
+        hasCompletedOnboarding: !!user.details
+      } 
+    });
   } catch (error) {
     console.error('Login Error:', error);
     res.status(500).json({ error: 'Internal server error during login.' });
@@ -88,6 +110,38 @@ router.post('/login', async (req, res) => {
 // but we provide the endpoint to fulfill the architecture plan.
 router.post('/logout', (req, res) => {
   res.status(200).json({ message: 'Successfully logged out. Please clear token on client.' });
+});
+
+// Save User Details Onboarding
+router.post('/details', verifyToken, async (req: AuthRequest, res) => {
+  try {
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized.' });
+    }
+
+    const { gender, birthday, experienceLevel, currentStatus, dribbleHand } = req.body;
+
+    if (!gender || !birthday || !experienceLevel || !currentStatus || !dribbleHand) {
+      return res.status(400).json({ error: 'All fields are required.' });
+    }
+
+    const details = await prisma.userDetails.create({
+      data: {
+        userId,
+        gender,
+        birthday: new Date(birthday),
+        experienceLevel,
+        currentStatus,
+        dribbleHand
+      }
+    });
+
+    res.status(201).json({ message: 'Details saved successfully', details });
+  } catch (error) {
+    console.error('Save Details Error:', error);
+    res.status(500).json({ error: 'Internal server error while saving details.' });
+  }
 });
 
 export default router;

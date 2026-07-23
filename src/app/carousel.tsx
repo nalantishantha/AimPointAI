@@ -66,8 +66,8 @@ export default function CarouselScreen() {
               style={{ flex: 1, width: '100%', height: '100%' }}
               player={player}
               contentFit="cover"
-              allowsFullscreen={false}
-              showsControls={false}
+              fullscreenOptions={{ enable: false }}
+              nativeControls={false}
             />
             {/* Subtle dark gradient overlay to make it look premium */}
             <View className="absolute inset-0 bg-primary-bg/20" />

@@ -9,7 +9,7 @@ import { TUTORIALS } from '@/data/tutorials';
 import { useVideoPlayer, VideoView } from 'expo-video';
 
 // We extract this into a separate component so each video player has its own hook state
-function TutorialItem({ item, index }: { item: typeof TUTORIALS[0], index: number }) {
+function TutorialItem({ item }: { item: typeof TUTORIALS[0] }) {
   const router = useRouter();
   
   // Create an inline player for the preview
@@ -32,8 +32,8 @@ function TutorialItem({ item, index }: { item: typeof TUTORIALS[0], index: numbe
           style={{ width: '100%', height: '100%', position: 'absolute' }}
           player={player}
           contentFit="cover"
-          allowsFullscreen={false}
-          showsControls={false}
+          fullscreenOptions={{ enable: false }}
+          nativeControls={false}
         />
 
         {/* Overlay to darken video slightly and show play icon */}
@@ -77,8 +77,8 @@ export default function TutorialsScreen() {
           transition={{ type: 'timing', duration: 800, delay: 200 }}
           className="space-y-6"
         >
-          {TUTORIALS.map((item, index) => (
-            <TutorialItem key={item.id} item={item} index={index} />
+          {TUTORIALS.map((item) => (
+            <TutorialItem key={item.id} item={item} />
           ))}
         </MotiView>
 

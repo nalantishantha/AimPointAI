@@ -44,7 +44,7 @@ export default function EmailSignupScreen() {
       await signIn(response.data.token, response.data.user);
       // The Layout routing effect will automatically kick us to (tabs)
     } catch (error: any) {
-      console.error('Signup Error:', error);
+      console.log('Signup failed:', error.message);
       if (axios.isAxiosError(error) && error.response) {
         setErrorMsg(error.response.data.error || 'Failed to register');
       } else {

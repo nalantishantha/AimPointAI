@@ -5,9 +5,11 @@ import { MotiView } from 'moti';
 import LottieView from 'lottie-react-native';
 import { HeroTitle, Body } from '@/components/ui/Typography';
 import { AIContainer } from '@/components/ui/AIContainer';
+import { useAuth } from '@/context/AuthContext';
 
 export default function AnimatedSplashScreen() {
   const router = useRouter();
+  const { user, isLoading } = useAuth();
   const animationRef = useRef<LottieView>(null);
 
   useEffect(() => {
@@ -16,11 +18,18 @@ export default function AnimatedSplashScreen() {
     
     // Simulate initialization process and transition to the onboarding carousel
     const timer = setTimeout(() => {
-      router.replace('/carousel');
+      // Don't route if we haven't finished checking secure storage yet
+      if (isLoading) return;
+
+      if (user) {
+        router.replace('/(tabs)');
+      } else {
+        router.replace('/carousel');
+      }
     }, 3500);
 
     return () => clearTimeout(timer);
-  }, [router]);
+  }, [router, user, isLoading]);
 
   return (
     <AIContainer safeArea={false}>

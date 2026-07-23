@@ -60,13 +60,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isLoading) return;
 
-    const inAuthGroup = segments[0] === '(auth)';
+    // Which route group is the user currently in?
+    const inProtectedGroup = segments[0] === '(tabs)' || segments[0] === '(onboarding)' || segments[0] === 'analysis' || segments[0] === 'capture';
+    const inPublicGroup = segments[0] === '(auth)' || segments[0] === 'carousel';
 
-    if (!user && !inAuthGroup) {
+    if (!user && inProtectedGroup) {
       // User is not logged in but trying to access a secure screen -> Kick them to login
       router.replace('/(auth)');
-    } else if (user && inAuthGroup) {
-      // User is logged in but stuck in the auth screens -> Push them to dashboard
+    } else if (user && inPublicGroup) {
+      // User is logged in but stuck in public screens -> Push them to dashboard
       router.replace('/(tabs)');
     }
   }, [user, segments, isLoading]);

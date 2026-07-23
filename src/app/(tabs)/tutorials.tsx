@@ -1,9 +1,57 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { MotiView } from 'moti';
 import { Title, Body, Label, MonoText } from '@/components/ui/Typography';
 import { AIContainer } from '@/components/ui/AIContainer';
-import { PlaySquare, Video } from 'lucide-react-native';
+import { PlaySquare } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { TUTORIALS } from '@/data/tutorials';
+import { useVideoPlayer, VideoView } from 'expo-video';
+
+// We extract this into a separate component so each video player has its own hook state
+function TutorialItem({ item, index }: { item: typeof TUTORIALS[0], index: number }) {
+  const router = useRouter();
+  
+  // Create an inline player for the preview
+  const player = useVideoPlayer(item.source, player => {
+    player.loop = true;
+    player.muted = true;
+    player.play();
+  });
+
+  return (
+    <TouchableOpacity 
+      activeOpacity={0.8}
+      onPress={() => router.push(`/tutorial/${item.id}`)}
+      className="mb-6"
+    >
+      <View className="w-full h-48 bg-secondary-bg/50 border border-border rounded-2xl items-center justify-center mb-3 relative overflow-hidden">
+        
+        {/* Inline Video Preview */}
+        <VideoView
+          style={{ width: '100%', height: '100%', position: 'absolute' }}
+          player={player}
+          contentFit="cover"
+          allowsFullscreen={false}
+          showsControls={false}
+        />
+
+        {/* Overlay to darken video slightly and show play icon */}
+        <View className="absolute inset-0 bg-primary-bg/20 items-center justify-center">
+          <PlaySquare color="#F47A20" size={40} opacity={0.9} />
+        </View>
+
+        <View className="absolute bottom-2 right-2 bg-primary-bg/80 px-2 py-1 rounded">
+          <MonoText className="text-xs">{item.duration}</MonoText>
+        </View>
+      </View>
+      
+      <Label className="text-accent tracking-widest text-[10px] mb-1">{item.category}</Label>
+      <Title className="text-lg mb-1">{item.title}</Title>
+      <Body className="text-sm text-secondary-text">{item.description}</Body>
+    </TouchableOpacity>
+  );
+}
 
 export default function TutorialsScreen() {
   return (
@@ -29,46 +77,11 @@ export default function TutorialsScreen() {
           transition={{ type: 'timing', duration: 800, delay: 200 }}
           className="space-y-6"
         >
-          {/* Tutorial Item 1 */}
-          <View className="mb-6">
-            <View className="w-full h-48 bg-secondary-bg/50 border border-border rounded-2xl items-center justify-center mb-3 relative overflow-hidden">
-              <PlaySquare color="#F47A20" size={32} />
-              <View className="absolute bottom-2 right-2 bg-primary-bg/80 px-2 py-1 rounded">
-                <MonoText className="text-xs">12:45</MonoText>
-              </View>
-            </View>
-            <Label className="text-accent tracking-widest text-[10px] mb-1">BIOMECHANICS</Label>
-            <Title className="text-lg mb-1">The Kinetic Chain</Title>
-            <Body className="text-sm text-secondary-text">How energy transfers from the floor through your release point.</Body>
-          </View>
-
-          {/* Tutorial Item 2 */}
-          <View className="mb-6">
-            <View className="w-full h-48 bg-secondary-bg/50 border border-border rounded-2xl items-center justify-center mb-3 relative overflow-hidden">
-              <Video color="#A1A1AA" size={32} className="opacity-50" />
-              <View className="absolute bottom-2 right-2 bg-primary-bg/80 px-2 py-1 rounded">
-                <MonoText className="text-xs">08:20</MonoText>
-              </View>
-            </View>
-            <Label className="text-neural tracking-widest text-[10px] mb-1">ALIGNMENT</Label>
-            <Title className="text-lg mb-1">Perfecting the Guide Hand</Title>
-            <Body className="text-sm text-secondary-text">Eliminate thumb flicks and off-hand interference.</Body>
-          </View>
-
-          {/* Tutorial Item 3 */}
-          <View className="mb-6">
-            <View className="w-full h-48 bg-secondary-bg/50 border border-border rounded-2xl items-center justify-center mb-3 relative overflow-hidden">
-              <Video color="#A1A1AA" size={32} className="opacity-50" />
-              <View className="absolute bottom-2 right-2 bg-primary-bg/80 px-2 py-1 rounded">
-                <MonoText className="text-xs">15:10</MonoText>
-              </View>
-            </View>
-            <Label className="text-neural tracking-widest text-[10px] mb-1">TEMPO</Label>
-            <Title className="text-lg mb-1">One-Motion vs Two-Motion</Title>
-            <Body className="text-sm text-secondary-text">Breaking down the speed advantages of modern shooting forms.</Body>
-          </View>
-
+          {TUTORIALS.map((item, index) => (
+            <TutorialItem key={item.id} item={item} index={index} />
+          ))}
         </MotiView>
+
       </ScrollView>
     </AIContainer>
   );

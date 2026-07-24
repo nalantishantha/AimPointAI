@@ -112,7 +112,7 @@ export default function AnalysisScreen() {
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 800, delay: 600 }}
-          className="mb-12"
+          className="mb-8"
         >
           <Label className="text-secondary-text tracking-widest text-xs mb-4">SYSTEM DIRECTIVES</Label>
           <View className="bg-neural/10 border border-neural/30 rounded-2xl p-5 relative overflow-hidden">
@@ -128,6 +128,21 @@ export default function AnalysisScreen() {
           </View>
         </MotiView>
         
+        {/* Proceed to Personal Plan */}
+        <MotiView
+          from={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'timing', duration: 800, delay: 800 }}
+          className="mb-12"
+        >
+          <Pressable 
+            onPress={() => router.push('/(tabs)/plan')}
+            className="w-full bg-accent rounded-full h-14 flex-row items-center justify-center border-2 border-accent"
+          >
+            <MonoText className="text-primary-bg font-bold tracking-widest">GENERATE PERSONAL PLAN</MonoText>
+          </Pressable>
+        </MotiView>
+
       </ScrollView>
     </AIContainer>
   );

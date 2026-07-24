@@ -4,7 +4,7 @@ import { MotiView } from 'moti';
 import { Title, Body, Label, MonoText } from '@/components/ui/Typography';
 import { Button } from '@/components/ui/Button';
 import { AIContainer } from '@/components/ui/AIContainer';
-import { ClipboardList, BrainCircuit, Lock } from 'lucide-react-native';
+import { ClipboardList, BrainCircuit, Lock, Activity, Target } from 'lucide-react-native';
 
 export default function PlanScreen() {
   return (
@@ -20,7 +20,7 @@ export default function PlanScreen() {
         >
           <MonoText className="text-neural/70 mb-1">// MODULE: AI COACH</MonoText>
           <Title className="text-3xl mb-2">Protocol Plan</Title>
-          <Body>Your adaptive training regimen, algorithmically generated based on your telemetric weaknesses.</Body>
+          <Body>Your adaptive training regimen, algorithmically generated based on your telemetric weaknesses from SCAN_ID: sim-01.</Body>
         </MotiView>
 
         {/* Current Protocol Focus */}
@@ -31,24 +31,30 @@ export default function PlanScreen() {
           className="bg-card border border-border rounded-2xl p-6 mb-8 relative overflow-hidden"
         >
           <View className="absolute -top-4 -right-4 p-4 opacity-10">
-            <BrainCircuit color="#00F0FF" size={120} />
+            <BrainCircuit color="#F47A20" size={120} />
           </View>
           
-          <Label className="text-neural tracking-widest text-xs mb-2">PHASE II: TEMPO</Label>
-          <Title className="text-xl mb-4">Catch & Shoot Mechanics</Title>
+          <Label className="text-accent tracking-widest text-xs mb-2">PRIORITY TARGET</Label>
+          <Title className="text-xl mb-4">Elbow Alignment Correction</Title>
           
-          <View className="space-y-3 mb-6">
+          <View className="space-y-4 mb-6 mt-2">
             <View className="flex-row items-start">
-              <View className="w-6 h-6 rounded-full bg-accent/20 items-center justify-center mr-3">
-                <Label className="text-accent text-xs">1</Label>
+              <View className="w-8 h-8 rounded-full bg-accent/20 items-center justify-center mr-3">
+                <Target color="#F47A20" size={14} />
               </View>
-              <Body className="flex-1 text-sm text-secondary-text">Perform 50 reps with immediate hip drop on catch.</Body>
+              <View className="flex-1">
+                <MonoText className="text-white mb-1">Form Shooting (Close Range)</MonoText>
+                <Body className="text-sm text-secondary-text">Perform 50 reps using only one hand. Tuck the elbow tight to the core. Ensure 90° angle.</Body>
+              </View>
             </View>
             <View className="flex-row items-start">
-              <View className="w-6 h-6 rounded-full bg-accent/20 items-center justify-center mr-3">
-                <Label className="text-accent text-xs">2</Label>
+              <View className="w-8 h-8 rounded-full bg-accent/20 items-center justify-center mr-3">
+                <Activity color="#F47A20" size={14} />
               </View>
-              <Body className="flex-1 text-sm text-secondary-text">Maintain 0.6s release speed threshold.</Body>
+              <View className="flex-1">
+                <MonoText className="text-white mb-1">Guide Hand Resistance</MonoText>
+                <Body className="text-sm text-secondary-text">30 reps. Use a resistance band on the shooting arm to prevent elbow flare during upward motion.</Body>
+              </View>
             </View>
           </View>
           
@@ -69,15 +75,15 @@ export default function PlanScreen() {
           <Label className="text-secondary-text tracking-widest text-xs mb-4">UPCOMING PHASES</Label>
           
           <View className="border border-border/50 bg-secondary-bg/20 rounded-xl p-5 mb-3 flex-row items-center justify-between opacity-50">
-            <View>
+            <View className="flex-1 mr-4">
               <Title className="text-base text-white">Phase III: Range Extension</Title>
-              <Body className="text-xs text-secondary-text mt-1">Requires 85% efficiency in Phase II</Body>
+              <Body className="text-xs text-secondary-text mt-1">Requires 85% efficiency in Elbow Alignment</Body>
             </View>
             <Lock color="#A1A1AA" size={20} />
           </View>
 
           <View className="border border-border/50 bg-secondary-bg/20 rounded-xl p-5 flex-row items-center justify-between opacity-50">
-            <View>
+            <View className="flex-1 mr-4">
               <Title className="text-base text-white">Phase IV: Elite Arc Control</Title>
               <Body className="text-xs text-secondary-text mt-1">Requires 45+ degree consistent release</Body>
             </View>

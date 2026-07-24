@@ -8,22 +8,50 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { AIContainer } from '@/components/ui/AIContainer';
 import { ChevronLeft } from 'lucide-react-native';
+import { useAuth } from '@/context/AuthContext';
+import { apiClient } from '@/api/client';
+import axios from 'axios';
 
 export default function EmailSignupScreen() {
   const router = useRouter();
+  const { signIn } = useAuth();
+  
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
+    setErrorMsg('');
+    if (password !== confirmPassword) {
+      setErrorMsg('Passwords do not match');
+      return;
+    }
+    
     setIsLoading(true);
-    setTimeout(() => {
+    
+    try {
+      const response = await apiClient.post('/auth/register', {
+        email,
+        password,
+        firstName,
+        lastName
+      });
+      
+      await signIn(response.data.token, response.data.user);
+      // The Layout routing effect will automatically kick us to (tabs)
+    } catch (error: any) {
+      console.log('Signup failed:', error.message);
+      if (axios.isAxiosError(error) && error.response) {
+        setErrorMsg(error.response.data.error || 'Failed to register');
+      } else {
+        setErrorMsg('Network error. Is the server running?');
+      }
       setIsLoading(false);
-      router.push('/(onboarding)');
-    }, 2500); // Simulate network request
+    }
   };
 
   return (
@@ -112,6 +140,10 @@ export default function EmailSignupScreen() {
               transition={{ type: 'timing', duration: 800, delay: 400 }}
               className="mt-4"
             >
+              {errorMsg ? (
+                <Label className="text-red-500 text-center mb-4 text-sm font-semibold">{errorMsg}</Label>
+              ) : null}
+
               <Button 
                 label="Continue" 
                 onPress={handleSignup}
